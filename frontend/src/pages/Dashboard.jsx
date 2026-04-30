@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 
 const Dashboard = () => {
   const { user, logout }       = useContext(AuthContext);
@@ -30,7 +31,7 @@ const Dashboard = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/tasks', config);
+      const res = await axios.get(`${API_URL}/api/tasks`, config);
       setTasks(res.data);
     } catch (err) {
       setError('Failed to fetch tasks');
@@ -47,17 +48,11 @@ const Dashboard = () => {
     try {
       if (editingTask) {
         // UPDATE
-        const res = await axios.put(
-          `http://localhost:5000/api/tasks/${editingTask._id}`,
-          formData, config
-        );
+        const res = await axios.post(`${API_URL}/api/tasks`, formData, config);
         setTasks(tasks.map(t => t._id === editingTask._id ? res.data : t));
       } else {
         // CREATE
-        const res = await axios.post(
-          'http://localhost:5000/api/tasks',
-          formData, config
-        );
+        const res = await axios.put(`${API_URL}/api/tasks/${editingTask._id}`, formData, config);
         setTasks([res.data, ...tasks]);
       }
       resetForm();
@@ -72,7 +67,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this task?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, config);
+      await axios.delete(`${API_URL}/api/tasks/${id}`, config);
       setTasks(tasks.filter(t => t._id !== id));
     } catch (err) {
       setError('Failed to delete task');

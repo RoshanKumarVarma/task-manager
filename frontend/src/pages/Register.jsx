@@ -3,6 +3,7 @@ import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import API_URL from '../config';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name:'', email:'', password:'' });
@@ -20,10 +21,7 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/register',
-        formData
-      );
+      const res = await axios.post(`${API_URL}/api/auth/register`, formData);
       login(res.data);
       navigate('/dashboard');
     } catch (err) {
